@@ -102,3 +102,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+yolov3.weights
+gender_net.caffemodel
+forest.pickle
+gender_deploy.prototxt
