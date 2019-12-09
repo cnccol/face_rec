@@ -21,7 +21,7 @@ from preprocess import prep_image, inp_to_image, letterbox_image
 import cluster_1_door
 
 config = configparser.ConfigParser()
-config.read('cfg.ini')
+config.read(os.path.expanduser('~/Desktop/cfg.ini'))
 
 # All parameters that could be changed on daily usage
 cwd = config['context']['cwd']

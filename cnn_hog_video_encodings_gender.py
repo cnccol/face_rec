@@ -14,7 +14,7 @@ import face_recognition
 import cluster_1_door
 
 config = configparser.ConfigParser()
-config.read('cfg.ini')
+config.read(os.path.expanduser('~/Desktop/cfg.ini'))
 
 cwd = config['context']['cwd']
 

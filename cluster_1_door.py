@@ -7,17 +7,18 @@ import pandas as pd
 from sklearn.cluster import DBSCAN
 
 def main(up_to_date):
-    (door, n_jobs, eps, min_samples, max_h_face, min_rgb_mean,
+    (cwd, door, n_jobs, eps, min_samples, max_h_face, min_rgb_mean,
      min_hog_score, face_types, h_face_inside,
      worker_visits_threshold) = parse_cfg()
 
-    core_df = pd.read_csv('core_CSVs/' + sorted(os.listdir('core_CSVs'))[-1],
-                           index_col=0)
-    core_npy = np.load(
-        'core_encodings/' + sorted(os.listdir('core_encodings'))[-1])
+    core_df = pd.read_csv(
+        cwd + 'core_CSVs/' + sorted(os.listdir(cwd + 'core_CSVs'))[-1],
+        index_col=0)
+    core_npy = np.load(cwd + 'core_encodings/'
+                       + sorted(os.listdir(cwd + 'core_encodings'))[-1])
 
-    CSVs_dir = 'CSVs_cnn_hog'
-    encodings_dir = 'encodings_cnn_hog'
+    CSVs_dir = cwd + 'CSVs_cnn_hog'
+    encodings_dir = cwd + 'encodings_cnn_hog'
 
     dates = []
     for csv in sorted(os.listdir(CSVs_dir)):
@@ -46,9 +47,9 @@ def main(up_to_date):
         df_day = df_day[filter_faces].reset_index(drop=True)
         npy_day = npy_day[filter_faces]
 
-        filter_11_days = (core_df.date >= sorted(core_df.date.unique())[-11])
-        core_df = core_df[filter_11_days].reset_index(drop=True)
-        core_npy = core_npy[filter_11_days]
+        filter_10_days = (core_df.date >= sorted(core_df.date.unique())[-10])
+        core_df = core_df[filter_10_days].reset_index(drop=True)
+        core_npy = core_npy[filter_10_days]
 
         core_df = core_df[df_day.columns]
         core_df = pd.concat([core_df, df_day], ignore_index=True)
@@ -72,10 +73,10 @@ def main(up_to_date):
 
         print(core_df.loc[len(core_df)-1, 'date'], time.time() - tt)
 
-    name = core_df.date.min() + '_to_' core_df.date.max()
+    name = core_df.date.min() + '_to_' + core_df.date.max()
 
-    core_df.to_csv('core_CSVs/' + name + '.csv')
-    np.save('core_encodings/' + name + '.npy', core_npy)
+    core_df.to_csv(cwd + 'core_CSVs/' + name + '.csv')
+    np.save(cwd + 'core_encodings/' + name + '.npy', core_npy)
 
     print(name, 'done and saved')
 
@@ -84,27 +85,28 @@ def main(up_to_date):
     if weekday == 6:
         visits_df = make_visits_df(core_df, worker_visits_threshold)
 
-        visits_df.to_csv('tablas_visitas/' + name + '.csv')
+        visits_df.to_csv(cwd + 'tablas_visitas/' + name + '.csv')
 
         print('Also, visits_df done and saved')
 
 
 def parse_cfg():
     config = configparser.ConfigParser()
-    config.read('cfg.ini')
+    config.read(os.path.expanduser('~/Desktop/cfg.ini'))
 
+    cwd = config['context']['cwd']
     door = int(config['cluster']['door'])
     n_jobs = int(config['cluster']['n_jobs'])
     eps = float(config['cluster']['eps'])
     min_samples = int(config['cluster']['min_samples'])
     max_h_face = int(config['cluster']['max_h_face'])
     min_rgb_mean = int(config['cluster']['min_rgb_mean'])
-    min_hog_score = int(config['cluster']['min_hog_score'])
+    min_hog_score = float(config['cluster']['min_hog_score'])
     face_types = eval(config['cluster']['face_types'])
     h_face_inside = int(config['cluster']['h_face_inside'])
     worker_visits_threshold = int(config['cluster']['worker_visits_threshold'])
 
-    return (door, n_jobs, eps, min_samples, max_h_face, min_rgb_mean,
+    return (cwd, door, n_jobs, eps, min_samples, max_h_face, min_rgb_mean,
             min_hog_score, face_types, h_face_inside, worker_visits_threshold)
 
 
@@ -152,4 +154,4 @@ def make_visits_df(matched_df, worker_visits_threshold):
 
 
 if __name__ == '__main__':
-    main('2019-11-11')
+    main('2019-11-18')

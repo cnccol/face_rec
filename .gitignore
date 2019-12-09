@@ -103,6 +103,14 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+1/
+2/
+3/
+4/
+deployed/
+
+*#
+
 yolov3.weights
 gender_net.caffemodel
 forest.pickle

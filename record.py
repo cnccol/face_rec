@@ -1,3 +1,4 @@
+import os
 import configparser
 import time
 import datetime
@@ -5,7 +6,7 @@ import cv2
 import imutils
 
 config = configparser.ConfigParser()
-config.read('cfg.ini')
+config.read(os.path.expanduser('~/Desktop/cfg.ini'))
 
 cwd = config['context']['cwd']
 cam_index = int(config['record']['cam_index'])
@@ -21,7 +22,7 @@ date = str(now.date())
 cap = cv2.VideoCapture(cam_index)
 time.sleep(2.0)
 
-cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
